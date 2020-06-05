@@ -40,11 +40,6 @@ def exec(fmt):
         print("{0},{1}".format(ts,dlRate))
     else:
         print("Download:   {0:.0f} Mbps".format(dlRate))
-    
-
-
-
-
 
 if __name__ == "__main__":
     main()

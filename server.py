@@ -6,20 +6,10 @@ app = Flask(__name__, static_url_path="")
 @app.route("/", defaults = {'path':''})
 @app.route("/<path:path>")
 def interface(path):
-    if path == '':
-        return render_template("speedmon.html")
-    return send_from_directory('static', path)
-
-@app.route('/js/<path:path>')
-def send_js(path):
-    return send_from_directory('js', path)
- 
-@app.route('/css/<path:path>')
-def send_css(path):
-    return send_from_directory('css', path)
+    return render_template("speedmon.html")
 
 @app.route("/results", methods=["GET"])
-def wakeup():
+def results():
     status = 200
     success = True
 
