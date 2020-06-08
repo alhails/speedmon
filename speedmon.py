@@ -34,12 +34,17 @@ def exec(fmt):
     dlBytes = results['download']['bytes']
     dlElapsed = results['download']['elapsed']
     dlRate = (dlBytes / dlElapsed) / 125 # Convert to Mbps
+    ulBytes = results['upload']['bytes']
+    ulElapsed = results['upload']['elapsed']
+    ulRate = (ulBytes / ulElapsed) / 125 # Convert to Mbps
+
     ts = results['timestamp']
 
     if fmt == "csv":
-        print("{0},{1}".format(ts,dlRate))
+        print("{0},{1},{2}".format(ts,dlRate,ulRate))
     else:
         print("Download:   {0:.0f} Mbps".format(dlRate))
+        print("Upload:     {0:.0f} Mbps".format(ulRate))
 
 if __name__ == "__main__":
     main()

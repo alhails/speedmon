@@ -19,15 +19,16 @@ def results():
     results = []
     for line in lines:
         items = line.split(",")
-        result = Result(items[1].rstrip(), items[0])
+        result = Result(items[0], items[1].rstrip(), items[2].rstrip())
         results.append(result)
             
     return json.dumps([o.__dict__ for o in results]), status, {'ContentType': 'application/json'}
 
 class Result():
-    def __init__(self, rate, ts):
-        self.rate = rate
+    def __init__(self, ts, dl, ul):
         self.ts = ts
+        self.dl = dl
+        self.ul = ul
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

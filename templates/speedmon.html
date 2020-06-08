@@ -37,6 +37,7 @@
                             }
                         }],
                         yAxes: [{
+                            labelString: 'Mbps',
                             ticks: {
                                 beginAtZero: true
                             }
@@ -52,15 +53,21 @@
                     var labels = _.map(results, function(item) {
                         return moment(item.ts);
                     });
-                    var rates = _.pluck(results, "rate");
+                    var dl = _.pluck(results, "dl");
+                    var ul = _.pluck(results, "ul");
 
                     chart.data = {
                         labels: labels,
                         datasets: [{
-                            label: 'Speed Test',
+                            label: 'Download',
                             backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
                             borderColor: window.chartColors.red,
-                            data: rates
+                            data: dl
+                        },{
+                            label: 'Upload',
+                            backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+                            borderColor: window.chartColors.blue,
+                            data: ul
                         }]
                     };
                     chart.update();
