@@ -37,9 +37,12 @@
                             }
                         }],
                         yAxes: [{
-                            labelString: 'Mbps',
                             ticks: {
                                 beginAtZero: true
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Mbps'
                             }
                         }]
                     }
@@ -63,7 +66,7 @@
                             backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
                             borderColor: window.chartColors.red,
                             data: dl
-                        },{
+                        }, {
                             label: 'Upload',
                             backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
                             borderColor: window.chartColors.blue,
