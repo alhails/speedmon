@@ -35,10 +35,55 @@ class Result():
         self.dl = dl
         self.ul = ul
 
+class Noop():
+    def __init__(self, server, uid, pwd):
+        self.server = server
+        self.uid = uid
+        self.pwd = pwd
+    def uptime(self):
+        uptime = Uptime("00:00")
+        return uptime
+
+class Orbi():
+    def __init__(self, server, uid, pwd):
+        self.server = server
+        self.uid = uid
+        self.pwd = pwd
+
+    def uptime(self):
+        uptime = Uptime("00:00")
+
+        child = pexpect.spawn("telnet {0}".format(server))
+        child.expect("login:")
+        child.send("{0}\r".format(uid))
+        child.expect("Password:")
+        child.send("{0}\r".format(pwd))
+        child.expect("#")
+        child.send("uptime\r")
+
+        # 13:18:40 up  7:42,  1 users,  load average: 0.29, 0.36, 0.41
+        child.expect("up *(\d+:\d+)?(?:(\d+) min)?,")
+        if child.match:
+            hoursMin = child.match.group(1)
+            hours = 0
+            mins = 0
+            if hoursMin:
+                uptimeSplit = hoursMin.decode().split(":")
+                hours = int(uptimeSplit[0])
+                mins = int(uptimeSplit[1])
+
+            minsMatch = child.match.group(2)
+            if minsMatch:
+                mins = int(minsMatch.decode())
+
+            uptime = Uptime("{0:02d}:{1:02d}".format(hours, mins))
+
+        child.close()
+        return uptime
+
 @app.route("/uptime", methods=["GET"])
 def uptime():
     status = 200
-    uptime = Uptime("00:00")
 
     config = configparser.ConfigParser()
     config.read('server.cfg')
@@ -46,32 +91,8 @@ def uptime():
     uid = config.get('uptime', 'uid')
     pwd = config.get('uptime', 'pwd')
 
-    child = pexpect.spawn("telnet {0}".format(server))
-    child.expect("login:")
-    child.send("{0}\r".format(uid))
-    child.expect("Password:")
-    child.send("{0}\r".format(pwd))
-    child.expect("#")
-    child.send("uptime\r")
-
-    # 13:18:40 up  7:42,  1 users,  load average: 0.29, 0.36, 0.41
-    child.expect("up *(\d+:\d+)?(?:(\d+) min)?,")
-    if child.match:
-        hoursMin = child.match.group(1)
-        hours = 0
-        mins = 0
-        if hoursMin:
-            uptimeSplit = hoursMin.decode().split(":")
-            hours = int(uptimeSplit[0])
-            mins = int(uptimeSplit[1])
-
-        minsMatch = child.match.group(2)
-        if minsMatch:
-            mins = int(minsMatch.decode())
-
-        uptime = Uptime("{0:02d}:{1:02d}".format(hours, mins))
-
-    child.close()
+    router = Noop(server, uid, pwd)
+    uptime = router.uptime()
 
     return json.dumps(uptime.__dict__), status, {'ContentType': 'application/json'}
 
