@@ -12,6 +12,7 @@ There are two components -
 # Install
 
 * Create a cron job to execute speedmon.py and append csv results to a file
+  * 0 12 * * * PATH=/usr/bin:~/bin ~/bin/speedmon exec -f csv >> ~/Code/speedmon/data/speedmon.log
 * Host the Flask web app in web server (e.g. gunicorn)
 
 
